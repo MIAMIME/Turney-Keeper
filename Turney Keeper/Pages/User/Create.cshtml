@@ -1,0 +1,58 @@
+﻿@page
+@model Turney_Keeper.Pages.User.CreateModel
+
+@{
+    ViewData["Title"] = "Register an account";
+}
+
+<h1>Create an new account</h1>
+
+<h4>Create an new account or log in to continue.</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Users.Username" class="control-label">Username</label>
+                <input asp-for="Users.Username" class="form-control" />
+                <span asp-validation-for="Users.Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Users.Name" class="control-label">Name</label>
+                <input asp-for="Users.Name" class="form-control" />
+                <span asp-validation-for="Users.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Users.Surname" class="control-label">Surname</label>
+                <input asp-for="Users.Surname" class="form-control" />
+                <span asp-validation-for="Users.Surname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Users.Password" class="control-label">Password</label>
+                <input asp-for="Users.Password" type="password" class="form-control" />
+                <span asp-validation-for="Users.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Users.ConfirmPassword" class="control-label">Confirm Password</label>
+                <input asp-for="Users.ConfirmPassword" type="password" class="form-control" />
+                <span asp-validation-for="Users.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Users.Email" class="control-label">Email</label>
+                <input asp-for="Users.Email" class="form-control" />
+                <span asp-validation-for="Users.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+    <p>Already have an Account? Please <a asp-page="/Login">sign in</a>.</p>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

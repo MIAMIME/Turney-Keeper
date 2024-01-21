@@ -1,0 +1,38 @@
+﻿@page
+@model Turney_Keeper.Pages.Turneys.TourneyersModel
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore;
+@inject Turney_Keeper.Data.Turney_KeeperContext _context
+@{
+    ViewData["Title"] = "Tourneyers";
+}
+
+<h1>List of Tourneyers for @Model.Turneys.Title</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var userName in Model.UserNames)
+        {
+        <tr>
+            <td>@userName</td>
+            <td>
+                    @if (User.Identity.IsAuthenticated && User.FindFirst(ClaimTypes.Name)?.Value == Model.Turneys.Admin_id.ToString())
+                    {
+                                <form method="post">
+                                            <input type="hidden" name="Username" value="@userName" />
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                </form>
+                    }
+            </td>
+        </tr>
+        }
+
+    </tbody>
+</table>
+<div><a asp-page="/Turneys/Details" asp-route-id="@Model.Turneys.Id">Back to Turnament</a> </div>

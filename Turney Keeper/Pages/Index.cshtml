@@ -1,0 +1,67 @@
+﻿@page
+@model Turney_Keeper.Pages.Turneys.IndexModel
+
+@{
+    ViewData["Title"] = "Turney Keeper";
+}
+
+<h1>List of ongoing Turnaments</h1>
+
+<p>
+    <a asp-page="/Turneys/Create">Host a new Turney</a>
+</p>
+<form>
+    <p>
+        Title: <input type="text" asp-for="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Turneys[0].Title)
+            </th>
+            <th>
+                <p>Hosted by</p>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Turneys[0].Starting)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Turneys[0].Ending)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Turneys[0].Opened)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Turneys) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                    @{
+                        var adminUser = Model.GetUserById(item.Admin_id);
+                    }
+                    <span>@adminUser.Username</span>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Starting)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ending)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Opened)
+            </td>
+            <td>
+                    <a asp-page="/Turneys/Details" asp-route-id="@item.Id">Details</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

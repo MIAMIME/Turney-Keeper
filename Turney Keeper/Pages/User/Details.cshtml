@@ -1,0 +1,42 @@
+﻿@page "/User/Details"
+
+@model Turney_Keeper.Pages.User.DetailsModel
+
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+<h1>User Profile</h1>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            <strong>Username:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Users?.Username
+        </dd>
+        <dt class="col-sm-2">
+            <strong>Name:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Users?.Name
+        </dd>
+        <dt class="col-sm-2">
+            <strong>Surname:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Users?.Surname
+        </dd>
+        <dt class="col-sm-2">
+            <strong>Email:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Users?.Email
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-page="/User/Edit" asp-route-id="@Model.Users?.Id">Edit Profile</a>
+</div>

@@ -1,0 +1,60 @@
+﻿@page
+@model Turney_Keeper.Pages.Turneys.CreateModel
+
+@{
+    ViewData["Title"] = "Start a turnament";
+}
+
+<h1>Start new turnament</h1>
+<hr />
+<div class="row">
+
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Turneys.Title" class="control-label"></label>
+                <input asp-for="Turneys.Title" class="form-control" />
+                <span asp-validation-for="Turneys.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Turneys.Availability" class="control-label"></label>
+                <input asp-for="Turneys.Availability" class="form-control" />
+                <span asp-validation-for="Turneys.Availability" class="text-danger"></span>
+            <div class="form-text">How many users can Join (0-100)</div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Turneys.Description" class="control-label"></label>
+                <input asp-for="Turneys.Description" class="form-control" />
+                <span asp-validation-for="Turneys.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Turneys.Starting" class="control-label"></label>
+                <input asp-for="Turneys.Starting" class="form-control" />
+                <span asp-validation-for="Turneys.Starting" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Turneys.Ending" class="control-label"></label>
+                <input asp-for="Turneys.Ending" class="form-control" />
+                <span asp-validation-for="Turneys.Ending" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Turneys.password" class="control-label"></label>
+                <input asp-for="Turneys.password" class="form-control" />
+                <span asp-validation-for="Turneys.password" class="text-danger"></span>
+            <div class="form-text">Leave empty for no password</div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="/Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

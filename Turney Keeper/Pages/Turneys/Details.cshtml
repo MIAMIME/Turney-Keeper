@@ -1,0 +1,141 @@
+﻿@page
+@model Turney_Keeper.Pages.Turneys.DetailsModel
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Details";
+}
+@{
+    var currentDate = DateTime.Now;
+    var isStartingDatePast = Model.Turneys.Starting.Date > currentDate.Date;
+}
+
+<h1>@Model.Turneys.Title</h1>
+<div>
+    <hr />
+<div class="row">
+    <div class="col-sm-6">
+        <dl class="row">
+            <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Turneys.Description)
+            </dt>
+            <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Turneys.Description)
+            </dd>
+            <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Turneys.Starting)
+            </dt>
+            <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Turneys.Starting)
+            </dd>
+            <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Turneys.Ending)
+            </dt>
+            <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Turneys.Ending)
+            </dd>
+            <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Turneys.Opened)
+            </dt>
+            <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Turneys.Opened)
+            </dd>
+            <dt class="col-sm-2">
+            Number of Turneyers
+            </dt>
+            <dd class="col-sm-10">
+                    @($"{Model.Turneys.UserIds?.Length ?? 0}/{Model.Turneys.Availability}")
+            </dd>
+        </dl>
+    </div>
+
+    <div class="col-sm-6">
+            @if (isStartingDatePast && User.Identity.IsAuthenticated && (Model.Turneys.UserIds?.Length ?? 0) < Model.Turneys.Availability)
+            {
+                @if (!string.IsNullOrEmpty(Model.Turneys.password))
+                {
+                    var currentUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                    if (currentUserId != 0 && (Model.Turneys.UserIds == null || !Model.Turneys.UserIds.Contains(currentUserId)))
+                    {
+                        <form method="post" asp-page-handler="Join" asp-route-id="@Model.Turneys.Id">
+                            <div class="form-group">
+                                <label asp-for="Turneys.password" class="control-label"></label>
+                                <input asp-for="Turneys.password" type="password" class="form-control" />
+                                <span asp-validation-for="Turneys.password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary" name="joinButton">Join</button>
+                            </div>
+                        </form>
+                    }
+                }
+                else
+                {
+                    var currentUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                    if (currentUserId != 0 && (Model.Turneys.UserIds == null || !Model.Turneys.UserIds.Contains(currentUserId)))
+                    {
+                        <form method="post" asp-page-handler="Join" asp-route-id="@Model.Turneys.Id">
+                            <div class="form-group">
+                                    <button type="submit" class="btn btn-primary" name="joinButton">Join</button>
+                                </div>
+                            </form>
+                    }
+                }
+            }
+            @if (Model.Turneys.UserIds != null && Model.Turneys.UserIds.Any())
+            {
+                <a asp-page="/Turneys/Tourneyers" asp-route-id="@Model.Turneys.Id">List of Tourneyers</a>
+            }
+
+    </div>
+</div>
+    @if (Model.Turneys.BracketRounds != null && Model.Turneys.BracketRounds.Any())
+    {
+        <div>
+            <h4>Bracket Rounds</h4>
+            <table class="table">
+                <tr>
+                    <th>Round Number</th>
+                    <th>Matches</th>
+                </tr>
+                @foreach (var round in Model.Turneys.BracketRounds)
+                {
+                        <tr>
+                            <td>@round.RoundNumber</td>
+                            <td>
+                            @if (round.Matches != null && round.Matches.Any())
+                            {
+                                foreach (var match in round.Matches)
+                                {
+                                                            <p>Match Number: @match.MatchNumber</p>
+                                                <p>
+                                                    @Model.GetUserName(match.User1Id)-
+                                                    @match.User1Score
+                                                        vs  
+                                                    @match.User2Score-
+                                        @(match.User2Id.HasValue ? Model.GetUserName(match.User2Id.Value) : "N/A")
+                                                  </p>
+                                    @if (User.Identity.IsAuthenticated && User.FindFirst(ClaimTypes.Name)?.Value == Model.Turneys.Admin_id.ToString())
+                                    {
+                                      <a asp-page="/Turneys/ScoreInput" asp-route-id="@Model.Turneys.Id" asp-route-roundNumber="@round.RoundNumber" asp-route-matchNumber="@match.MatchNumber">Edit Score</a>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                        <p>No matches in this round.</p>
+                            }
+                            </td>
+                        </tr>
+                }
+            </table>
+        </div>
+    }
+
+    else
+    {
+        <p>Tourney didn's start yet</p>
+    }
+
+<div>
+   <a asp-page="/Index">Back to List</a>
+</div>
