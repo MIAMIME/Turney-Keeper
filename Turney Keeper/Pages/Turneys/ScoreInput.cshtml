@@ -15,7 +15,7 @@
 
     <div>
         <label for="User2Score">User2 Score:</label>
-        <input type="number" id="User2Score" name="@Model.GetUserName(Model.match.User1Id)" asp-for="@Model.GetUserName(Model.match.User2Id)" required />
+        <input type="number" id="User2Score" name="@Model.GetUserName(Model.match.User1Id)" asp-for="@Model.GetUserName(Model.match.User2Id.Value)" required />
     </div>
 
     <div>
