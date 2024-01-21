@@ -9,22 +9,30 @@
     <input type="hidden" asp-for="MatchNumber" />
 
     <div>
-        <label for="User1Score">User1 Score:</label>
+        <label for="User1Score">@Model.GetUserName(Model.match.User1Id) Score:</label>
         <input type="number" id="User1Score" name="User1Score" asp-for="User1Score" required />
     </div>
 
-    <div>
-        <label for="User2Score">User2 Score:</label>
-        <input type="number" id="User2Score" name="@Model.GetUserName(Model.match.User1Id)" asp-for="@Model.GetUserName(Model.match.User2Id.Value)" required />
-    </div>
+   <label for="User2Score">
+        @if (Model.match.User2Id.HasValue)
+        {
+            <text>@Model.GetUserName(Model.match.User2Id.Value) Score:</text>
+        }
+        else
+        {
+            <text>N/A Score:</text>
+        }
+    </label>
+    <input type="number" id="User2Score" name="User2Score" asp-for="User2Score" required />
+</div>
 
-    <div>
-        <label for="AdvanceUser">Advance User:</label>
-        <select id="AdvanceUser" name="AdvanceUser" asp-for="AdvanceUser" required>
-            <option value="@Model.match.User1Id">@Model.GetUserName(Model.match.User1Id)</option>
-            <option value="@Model.match.User2Id">@Model.GetUserName(Model.match.User2Id.Value)</option>
-        </select>
-    </div>
+<div>
+    <label for="AdvanceUser">Advance User:</label>
+    <select id="AdvanceUser" name="AdvanceUser" asp-for="AdvanceUser" required style="width: 200px;">
+        <option value="@Model.match.User1Id">@Model.GetUserName(Model.match.User1Id)</option>
+        <option value="@Model.match.User2Id">@((Model.match.User2Id.HasValue) ? Model.GetUserName(Model.match.User2Id.Value) : "N/A")</option>
+    </select>
+</div>
 
     <button type="submit">Submit Scores</button>
 </form>

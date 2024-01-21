@@ -79,10 +79,7 @@ namespace Turney_Keeper.Pages.Turneys
             }
             var turneys = _context.Turneys.Include(t => t.BracketRounds).FirstOrDefault(t => t.Id == Id);
             var round = turneys?.BracketRounds.FirstOrDefault(r => r.RoundNumber == RoundNumber);
-            if (round != null)
-            {
-                var match = round.Matches.FirstOrDefault(m => m.MatchNumber == MatchNumber);
-            }
+            var match = round?.Matches?.FirstOrDefault(m => m.MatchNumber == MatchNumber);
 
             if (turneys == null || round == null || match == null)
             {

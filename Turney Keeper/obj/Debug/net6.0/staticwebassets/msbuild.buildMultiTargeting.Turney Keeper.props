@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Turney Keeper.props" />
+</Project>

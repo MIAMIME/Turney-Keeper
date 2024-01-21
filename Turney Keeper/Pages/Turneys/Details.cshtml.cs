@@ -36,32 +36,34 @@ namespace Turney_Keeper.Pages.Turneys
 
             if(Turneys.Starting.Date<DateTime.Now && !Turneys.BracketRounds.Any(br => br.TurneyId == Turneys.Id))
             {
-
-                var initialRound = new BracketRound
+                if (Turneys.UserIds != null)
                 {
-                    TurneyId = Turneys.Id,
-                    RoundNumber = 1,
-                    Matches = new List<BracketMatch>()
-                };
-
-                for (int i = 0; i < Turneys.UserIds.Length; i += 2)
-                {
-                    var match = new BracketMatch
+                    var initialRound = new BracketRound
                     {
-                        User1Id = Turneys.UserIds[i],
-                        User2Id = (i + 1 < Turneys.UserIds.Length) ? Turneys.UserIds[i + 1] : (int?)null,
-                        User1Score = 0,
-                        User2Score = 0,
+                        TurneyId = Turneys.Id,
+                        RoundNumber = 1,
+                        Matches = new List<BracketMatch>()
                     };
 
-                    initialRound.Matches.Add(match);
+                    for (int i = 0; i < Turneys.UserIds.Length; i += 2)
+                    {
+                        var match = new BracketMatch
+                        {
+                            User1Id = Turneys.UserIds[i],
+                            User2Id = (i + 1 < Turneys.UserIds.Length) ? Turneys.UserIds[i + 1] : (int?)null,
+                            User1Score = 0,
+                            User2Score = 0,
+                        };
+
+                        initialRound.Matches.Add(match);
+                    }
+
+                    Turneys.BracketRounds = new List<BracketRound> { initialRound };
+
+                    await _context.SaveChangesAsync();
                 }
-
-                Turneys.BracketRounds = new List<BracketRound> { initialRound };
-
-                await _context.SaveChangesAsync();
-            }
-            return Page(); ;
+                }
+                return Page(); ;
         }
         public async Task<IActionResult> OnPostAsync(int? id)
         {
