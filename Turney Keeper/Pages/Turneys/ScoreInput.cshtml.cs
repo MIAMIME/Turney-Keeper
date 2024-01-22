@@ -33,7 +33,6 @@ namespace Turney_Keeper.Pages.Turneys
         [BindProperty]
         public int AdvanceUser { get; set; }
 
-        [BindProperty]
         public BracketMatch match { get; set; }
         public IActionResult OnGet(int id, int roundNumber, int matchNumber)
         {
@@ -77,24 +76,24 @@ namespace Turney_Keeper.Pages.Turneys
             {
                 return Page();
             }
-            var turneys = _context.Turneys.Include(t => t.BracketRounds).FirstOrDefault(t => t.Id == Id);
-            var round = turneys?.BracketRounds.FirstOrDefault(r => r.RoundNumber == RoundNumber);
-            var match = round?.Matches?.FirstOrDefault(m => m.MatchNumber == MatchNumber);
-
-            if (turneys == null || round == null || match == null)
-            {
-                return NotFound();
-            }
-
+            var turneys = _context.Turneys
+                .Include(t => t.BracketRounds)
+                .ThenInclude(r => r.Matches)
+                .FirstOrDefault(t => t.Id == Id);
+            var round = turneys.BracketRounds
+                .FirstOrDefault(r => r.RoundNumber == RoundNumber);
+            match = round.Matches.FirstOrDefault(m => m.MatchNumber == MatchNumber);
             match.User1Score = User1Score;
             match.User2Score = User2Score;
-            var currentRoundMatchesCount = round.Matches.Count();
+            _context.SaveChanges();
 
+            var currentRoundMatchesCount = round.Matches.Count();
+            
             if (currentRoundMatchesCount >= 2)
             {
-                var previousRound = turneys.BracketRounds.FirstOrDefault(r => r.RoundNumber == RoundNumber - 1);
+                var previousRound = turneys.BracketRounds.FirstOrDefault(r => r.RoundNumber == RoundNumber - 2);
 
-                if (previousRound != null && previousRound.Matches.Count() == 4)
+                if (previousRound == null || previousRound.Matches.Count() == 4)
                 {
                     var advanceUserId = AdvanceUser;
 
@@ -103,32 +102,50 @@ namespace Turney_Keeper.Pages.Turneys
 
                     if (nextRound != null)
                     {
-                        if (nextRound != null)
+                        var availableMatch = nextRound.Matches.FirstOrDefault(m => m.User1Id == null || m.User2Id == null);
+
+                        if (availableMatch != null)
                         {
-                            var availableMatch = nextRound.Matches.FirstOrDefault(m => m.User1Id == null || m.User2Id == null);
-
-                            if (availableMatch != null)
+                            if (availableMatch.User1Id == null)
                             {
-                                if (availableMatch.User1Id == null)
-                                {
-                                    availableMatch.User1Id = advanceUserId;
-                                    availableMatch.User1Score = 0;
-                                }
-                                else
-                                {
-                                    availableMatch.User2Id = advanceUserId;
-                                    availableMatch.User2Score = 0;
-                                }
-
+                                availableMatch.User1Id = advanceUserId;
+                                availableMatch.User1Score = 0;
                             }
+                            else
+                            {
+                                availableMatch.User2Id = advanceUserId;
+                                availableMatch.User2Score = 0;
+                            }
+
                         }
+                    }
+                    else
+                    {
+                        var newRoundNumber = RoundNumber + 1;
+                        var newRound = new BracketRound
+                        {
+                            TurneyId = turneys.Id,
+                            RoundNumber = newRoundNumber,
+                            Matches = new List<BracketMatch>()
+                        };
+                        var newMatch = new BracketMatch
+                        {
+                            User1Id = advanceUserId,
+                            User1Score = 0,
+                            User2Id = null,
+                            User2Score = 0
+                        };
+
+                        newRound.Matches.Add(newMatch);
+
+                        turneys.BracketRounds.Add(newRound);
                     }
                 }
             }
 
             _context.SaveChanges();
 
-            return Page();
+            return RedirectToPage("/Turneys/Details", new { id = Id });
         }
         public string GetUserName(int userId)
         {

@@ -28,6 +28,14 @@ namespace Turney_Keeper.Pages.Turneys
             {
                 Turneys = await _context.Turneys.ToListAsync();
             }
+            IQueryable<Turney> turneysQuery = _context.Turneys.AsQueryable();
+
+            if (!string.IsNullOrEmpty(SearchString))
+            {
+                turneysQuery = turneysQuery.Where(t => t.Title.Contains(SearchString));
+            }
+
+            Turneys = await turneysQuery.ToListAsync();
         }
     }
 }

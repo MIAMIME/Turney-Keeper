@@ -119,8 +119,19 @@ namespace Turney_Keeper.Pages.Turneys
                     }
                 }
             }
+            if (Request.Form["Leavebutton"].Any())
+            {
+                if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out int userIdInt))
+                {
+                    if (Turneys.UserIds != null && Turneys.UserIds.Contains(userIdInt))
+                    {
+                        Turneys.UserIds = Turneys.UserIds.Except(new[] { userIdInt }).ToArray();
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
 
-            return Page();
+                return Page();
         }
         public string GetUserName(int userId)
         {

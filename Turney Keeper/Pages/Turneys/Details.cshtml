@@ -77,7 +77,15 @@
                             <div class="form-group">
                                     <button type="submit" class="btn btn-primary" name="joinButton">Join</button>
                                 </div>
-                            </form>
+                        </form>
+                    }
+                    else if (Model.Turneys.UserIds.Contains(currentUserId))
+                    {
+                                    <form method="post" asp-page-handler="Leave" asp-route-id="@Model.Turneys.Id">
+                                        <div class="form-group">
+                                                <button type="submit" class="btn btn-primary" name="Leavebutton">Leave</button>
+                                            </div>
+                                    </form>
                     }
                 }
             }
